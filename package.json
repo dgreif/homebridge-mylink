@@ -1,0 +1,20 @@
+{
+  "name": "homebridge-mylink",
+  "version": "1.0.0",
+  "description": "Somfy myLink plugin for Homebridge.",
+  "license": "MIT",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "homepage": "https://github.com/yungsters/homebridge-mylink",
+  "bugs": {
+    "url": "http://github.com/yungsters/homebridge-mylink/issues"
+  },
+  "author": "Timothy Yung <yungsters@gmail.com>",
+  "files": ["src/", "LICENSE"],
+  "main": "src/index.js",
+  "repository": "yungsters/homebridge-mylink",
+  "engines": {
+    "node": ">=8.1.3"
+  }
+}
