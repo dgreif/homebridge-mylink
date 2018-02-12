@@ -788,6 +788,10 @@ slice-ansi@1.0.0:
   dependencies:
     is-fullwidth-code-point "^2.0.0"
 
+somfy-synergy@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/somfy-synergy/-/somfy-synergy-1.0.0.tgz#6489c2708599e502164234327e3598c435bd97ae"
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
