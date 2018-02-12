@@ -23,10 +23,11 @@ module.exports = homebridge => {
     }
 
     accessories(callback) {
-      const accessories = this.targets.map((target, index) => {
-        return new SomfyMyLinkTargetAccessory(this, target);
-      });
-      callback(accessories.filter(accessory => accessory !== null));
+      callback(
+        this.targets.map(
+          (target, index) => new SomfyMyLinkTargetAccessory(this, target),
+        ),
+      );
     }
   }
 
@@ -54,7 +55,7 @@ module.exports = homebridge => {
         }
         const normalTarget = normalizeTarget(target, index);
         if (normalTarget != null) {
-          targets.push(normalTarget);
+          normalConfig.targets.push(normalTarget);
         }
       });
     } else {
@@ -64,17 +65,17 @@ module.exports = homebridge => {
   };
 
   const normalizeTarget = ({name, orientation, targetID}, index) => {
-    if (typeof target.name !== 'string') {
+    if (typeof name !== 'string') {
       this.log('Bad `config.targets[' + index + '].name`, must be a string.');
       return null;
     }
-    if (typeof target.targetID !== 'string') {
+    if (typeof targetID !== 'string') {
       this.log(
         'Bad `config.targets[' + index + '].targetID`, must be a string.',
       );
       return null;
     }
-    const normalOrientation = target.orientation || {
+    const normalOrientation = orientation || {
       closed: 'down',
       middle: 'stop',
       opened: 'up',
