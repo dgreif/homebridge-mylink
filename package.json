@@ -47,6 +47,6 @@
     "pretty-quick": "^1.4.1"
   },
   "dependencies": {
-    "somfy-synergy": "^1.0.0"
+    "somfy-synergy": "^1.1.0"
   }
 }
