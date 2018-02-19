@@ -821,9 +821,9 @@ socket-pool@^1.2.1:
     generic-pool "^3.1.7"
     p-timeout "^1.2.0"
 
-somfy-synergy@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/somfy-synergy/-/somfy-synergy-1.1.0.tgz#b74fd3e4912a4d20a908f4cb4680388b30c0367f"
+somfy-synergy@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/somfy-synergy/-/somfy-synergy-1.2.1.tgz#f579bb13e419570d35f81a97bea5cdba0faa91bb"
   dependencies:
     socket-pool "^1.2.1"
 
