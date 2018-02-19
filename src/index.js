@@ -16,9 +16,15 @@ module.exports = homebridge => {
     constructor(log, config) {
       this.log = log;
 
-      const {ipAddress, systemID, targets} = normalizeConfiguration(config);
+      const {
+        ipAddress,
+        systemID,
+        targets,
+        compositeTargets,
+      } = normalizeConfiguration(config);
 
-      this.synergy = new SomfySynergy(systemID, ipAddress);
+      const client = new SomfySynergy(systemID, ipAddress);
+      this.synergy = new SomfySynergy.Platform(client, compositeTargets);
       this.targets = targets;
     }
 
@@ -31,11 +37,17 @@ module.exports = homebridge => {
     }
   }
 
-  const normalizeConfiguration = ({ipAddress, systemID, targets}) => {
+  const normalizeConfiguration = ({
+    ipAddress,
+    systemID,
+    targets,
+    compositeTargets,
+  }) => {
     const normalConfig = {
       ipAddress: 'undefined',
       systemID: 'undefined',
       targets: [],
+      compositeTargets: {},
     };
     if (typeof ipAddress === 'string') {
       normalConfig.ipAddress = ipAddress;
@@ -60,6 +72,38 @@ module.exports = homebridge => {
       });
     } else {
       this.log('Bad `config.targets` value, must be an array.');
+    }
+    if (compositeTargets != null) {
+      if (typeof compositeTargets === 'object') {
+        for (const [targetID, composedIDs] of Object.entries(
+          compositeTargets,
+        )) {
+          if (Array.isArray(composedIDs)) {
+            normalConfig.compositeTargets[targetID] = [];
+            for (const composedID of composedIDs) {
+              if (typeof composedID === 'string') {
+                normalConfig.compositeTargets[targetID].push(composedID);
+              } else {
+                this.log(
+                  'Bad `config.compositeTargets[' +
+                    targetID +
+                    ']` value, `' +
+                    String(composedID) +
+                    ' ` must be a string.',
+                );
+              }
+            }
+          } else {
+            this.log(
+              'Bad `config.compositeTargets[' +
+                targetID +
+                ']` value, must be an array.',
+            );
+          }
+        }
+      } else {
+        this.log('Bad `config.compositeTargets` value, must be an object.');
+      }
     }
     return normalConfig;
   };
