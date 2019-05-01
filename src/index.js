@@ -21,10 +21,11 @@ module.exports = homebridge => {
         systemID,
         targets,
         compositeTargets,
+        delay,
       } = normalizeConfiguration(config);
 
       const client = new SomfySynergy(systemID, ipAddress);
-      this.synergy = new SomfySynergy.Platform(client, compositeTargets);
+      this.synergy = new SomfySynergy.Platform(client, compositeTargets, delay);
       this.targets = targets;
     }
 
@@ -42,6 +43,7 @@ module.exports = homebridge => {
     systemID,
     targets,
     compositeTargets,
+    delay,
   }) => {
     const normalConfig = {
       ipAddress: 'undefined',
@@ -58,6 +60,11 @@ module.exports = homebridge => {
       normalConfig.systemID = systemID;
     } else {
       this.log('Bad `config.systemID` value, must be a string.');
+    }
+    if (typeof delay === 'number') {
+      normalConfig.delay = delay;
+    } else if (typeof delay !== 'undefined') {
+      this.log('Bad `config.delay` value, must be a number.');
     }
     if (Array.isArray(targets)) {
       targets.forEach((target, index) => {
