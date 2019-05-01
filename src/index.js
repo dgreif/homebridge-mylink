@@ -160,6 +160,7 @@ module.exports = homebridge => {
       // Homebridge requires these.
       this.name = displayName;
       this.uuid_base = uuid;
+      this.currentValue = 0
 
       this.log = platform.log;
       this.synergy = platform.synergy;
@@ -187,49 +188,45 @@ module.exports = homebridge => {
       );
 
       targetPosition.on('set', (targetValue, callback) => {
-        const logError = error => {
+        this.log(
+          'Setting position of %s from %s to %s.',
+          `target ${targetID} (${name})`,
+          `${this.currentValue}%`,
+          `${targetValue}%`,
+        );
+        positionState.setValue(
+          targetValue < this.currentValue
+            ? Characteristic.PositionState.DECREASING
+            : targetValue > this.currentValue
+            ? Characteristic.PositionState.INCREASING
+            : Characteristic.PositionState.STOPPED,
+        );
+
+        const target = this.synergy.target(targetID);
+        const promise =
+          targetValue === 0
+            ? target[orientation.closed]()
+            : targetValue === 100
+            ? target[orientation.opened]()
+            : target[orientation.middle]();
+
+        promise.then(() => {
+          callback();
+          this.currentValue = targetValue;
+          currentPosition.setValue(targetValue);
+        }, error => {
           this.log(
             'Encountered an error setting target position of %s: %s',
             `target ${targetID} (${name})`,
             error.message,
           );
-        };
-
-        currentPosition.getValue((error, currentValue) => {
-          if (error) {
-            logError(error);
-            callback(error);
-            return;
-          }
-
-          this.log(
-            'Setting position of %s from %s to %s.',
-            `target ${targetID} (${name})`,
-            `${currentValue}%`,
-            `${targetValue}%`,
-          );
-          positionState.setValue(
-            targetValue < currentValue
-              ? Characteristic.PositionState.DECREASING
-              : targetValue > currentValue
-                ? Characteristic.PositionState.INCREASING
-                : Characteristic.PositionState.STOPPED,
-          );
-          callback();
-
-          const target = this.synergy.target(targetID);
-          const promise =
-            targetValue === 0
-              ? target[orientation.closed]()
-              : targetValue === 100
-                ? target[orientation.opened]()
-                : target[orientation.middle]();
-
-          promise.then(() => {
-            currentPosition.setValue(targetValue);
-            positionState.setValue(Characteristic.PositionState.STOPPED);
-          }, logError);
+          positionState.setValue(Characteristic.PositionState.STOPPED);
+          callback(error);
         });
+      });
+
+      currentPosition.on('get', (callback) => {
+        callback(null, this.currentValue);
       });
 
       // Set a more sane default value for the current position.
