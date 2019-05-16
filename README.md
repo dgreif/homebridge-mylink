@@ -32,3 +32,10 @@ This plugin makes use of the [node-somfy-synergy](https://github.com/yungsters/n
   ]
 }
 ```
+
+# Setup
+
+You will need to use the Somfy myLink mobile app to configure the System ID and find the IP address and Target IDs. 
+
+* Go to "Integration", choose one of the options that isn't Alexa or IFTTT, then choose "Change System ID"
+* With a System ID set, choose "Get Integration report"
