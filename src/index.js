@@ -180,18 +180,18 @@ module.exports = homebridge => {
       );
 
       targetPosition.on('set', (targetValue, callback) => {
-        const logError = error => {
+        const handleError = error => {
           this.log(
             'Encountered an error setting target position of %s: %s',
             `target ${targetID} (${name})`,
             error.message,
           );
+          callback(error);
         };
 
         currentPosition.getValue((error, currentValue) => {
           if (error) {
-            logError(error);
-            callback(error);
+            handleError(error);
             return;
           }
 
@@ -208,7 +208,6 @@ module.exports = homebridge => {
               ? Characteristic.PositionState.INCREASING
               : Characteristic.PositionState.STOPPED,
           );
-          callback();
 
           const target = this.synergy.target(targetID);
           const promise =
@@ -221,7 +220,8 @@ module.exports = homebridge => {
           promise.then(() => {
             currentPosition.setValue(targetValue);
             positionState.setValue(Characteristic.PositionState.STOPPED);
-          }, logError);
+            callback();
+          }, handleError);
         });
       });
 
