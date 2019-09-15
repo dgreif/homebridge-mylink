@@ -17,9 +17,7 @@
   ],
   "main": "src/index.js",
   "repository": "yungsters/homebridge-mylink",
-  "scripts": {
-    "precommit": "pretty-quick --staged"
-  },
+  "scripts": {},
   "eslintConfig": {
     "env": {
       "es6": true,
@@ -65,5 +63,10 @@
   },
   "dependencies": {
     "somfy-synergy": "^1.4.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
