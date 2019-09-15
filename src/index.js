@@ -31,7 +31,7 @@ module.exports = homebridge => {
     accessories(callback) {
       callback(
         this.targets.map(
-          (target, index) => new SomfyMyLinkTargetAccessory(this, target),
+          target => new SomfyMyLinkTargetAccessory(this, target),
         ),
       );
     }
@@ -205,8 +205,8 @@ module.exports = homebridge => {
             targetValue < currentValue
               ? Characteristic.PositionState.DECREASING
               : targetValue > currentValue
-                ? Characteristic.PositionState.INCREASING
-                : Characteristic.PositionState.STOPPED,
+              ? Characteristic.PositionState.INCREASING
+              : Characteristic.PositionState.STOPPED,
           );
           callback();
 
@@ -215,8 +215,8 @@ module.exports = homebridge => {
             targetValue === 0
               ? target[orientation.closed]()
               : targetValue === 100
-                ? target[orientation.opened]()
-                : target[orientation.middle]();
+              ? target[orientation.opened]()
+              : target[orientation.middle]();
 
           promise.then(() => {
             currentPosition.setValue(targetValue);
