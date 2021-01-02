@@ -1,0 +1,47 @@
+{
+  "pluginAlias": "Somfy myLink",
+  "pluginType": "platform",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "ipAddress": {
+        "title": "IP Address",
+        "type": "string",
+        "description": "IP Address of your MyLink.  This should be a static IP Address",
+        "placeholder": "IP Address"
+      },
+      "systemID": {
+        "title": "System ID",
+        "type": "string",
+        "description": "In the myLink app, go to \"Integration\", choose one of the options that isn't Alexa or IFTTT, then choose \"Change System ID\".  Once set, choose \"Get Integration report\".",
+        "placeholder": "System ID"
+      },
+      "targets": {
+        "title": "Targets",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "title": "Target",
+          "properties": {
+            "targetID": {
+              "type": "string",
+              "title": "Target ID",
+              "placeholder": "AB123C45.1",
+              "required": true
+            },
+            "name": {
+              "type": "string",
+              "title": "Name",
+              "placeholder": "Name",
+              "required": true
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "ipAddress",
+      "systemID"
+    ]
+  }
+}
