@@ -22,7 +22,7 @@
     "build": "rm -rf lib && tsc",
     "test-homebridge": "npm run build && ./build/package.sh && homebridge -P ./release -U ./.homebridge",
     "prepare-npm-package": "./build/package.sh",
-    "push-with-tags": "git push --follow-tags && node ./build/github-releaser.js",
+    "push-with-tags": "git push --follow-tags",
     "deploy": "standard-version && npm publish release && npm run push-with-tags",
     "deploy-beta": "standard-version --prerelease beta && npm publish --tag alpha release && npm run push-with-tags"
   },
