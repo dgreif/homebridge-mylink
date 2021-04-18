@@ -1,4 +1,8 @@
-import { Logging } from 'homebridge'
+import { PlatformConfig } from 'homebridge'
+import { readFileSync, writeFileSync } from 'fs'
+import { HomebridgeAPI } from 'homebridge/lib/api'
+import { MyLinkPlatformConfig } from './platform'
+import { platformName } from './hap'
 
 type MyLinkAction = 'up' | 'down' | 'stop'
 interface MyLinkOrientationConfig {
@@ -13,111 +17,63 @@ export interface MyLinkTargetConfig {
   orientation: MyLinkOrientationConfig
 }
 
-export interface MyLinkConfig {
+export interface MyLinkConfigV1 {
   ipAddress: string
   systemID: string
   targets: MyLinkTargetConfig[]
   compositeTargets: { [target: string]: string[] }
 }
 
-function normalizeTarget(
-  { name, orientation, targetID }: any,
-  index: number,
-  log: Logging
+export function updateHomebridgeConfig(
+  homebridge: HomebridgeAPI,
+  update: (config: string) => string | void
 ) {
-  if (typeof name !== 'string') {
-    log('Bad `config.targets[' + index + '].name`, must be a string.')
-    return null
-  }
-  if (typeof targetID !== 'string') {
-    log('Bad `config.targets[' + index + '].targetID`, must be a string.')
-    return null
-  }
-  const normalOrientation: MyLinkOrientationConfig = orientation || {
-    closed: 'down',
-    middle: 'stop',
-    opened: 'up',
-  }
-  if (
-    !(typeof normalOrientation === 'object') ||
-    (['closed', 'middle', 'opened'] as const).some(
-      (state) => !['down', 'stop', 'up'].includes(normalOrientation[state])
-    )
-  ) {
-    log('Bad `config.targets[' + index + '].orientation`.')
-    return null
-  }
-  return {
-    name,
-    orientation: normalOrientation,
-    targetID,
+  const configPath = homebridge.user.configPath(),
+    config = readFileSync(configPath).toString(),
+    updatedConfig = update(config)
+
+  if (updatedConfig) {
+    writeFileSync(configPath, updatedConfig)
   }
 }
 
-export function normalizeConfiguration(
-  { ipAddress, systemID, targets, compositeTargets }: any,
-  log: Logging
-) {
-  const normalConfig = {
-    ipAddress: 'undefined',
-    systemID: 'undefined',
-    targets: [],
-    compositeTargets: {},
-  } as MyLinkConfig
+export function migrateV1Config(homebridge: HomebridgeAPI) {
+  updateHomebridgeConfig(homebridge, (originalConfig) => {
+    try {
+      const config = JSON.parse(originalConfig),
+        { platforms } = config,
+        myLinkPlatform: MyLinkConfigV1 = platforms?.find(
+          (platform: PlatformConfig) => platform.platform === platformName
+        )
 
-  if (typeof ipAddress === 'string') {
-    normalConfig.ipAddress = ipAddress
-  } else {
-    log('Bad `config.ipAddress` value, must be a string.')
-  }
-  if (typeof systemID === 'string') {
-    normalConfig.systemID = systemID
-  } else {
-    log('Bad `config.systemID` value, must be a string.')
-  }
-  if (Array.isArray(targets)) {
-    targets.forEach((target, index) => {
-      if (typeof target !== 'object') {
-        log('Bad `config.targets[' + index + ']`, must be an object.')
-        return null
+      if (!myLinkPlatform?.targets?.length) {
+        // no rest targets to migrate
+        return
       }
-      const normalTarget = normalizeTarget(target, index, log)
-      if (normalTarget !== null) {
-        normalConfig.targets.push(normalTarget)
+
+      // grab device id from the first target
+      const targetId = myLinkPlatform.targets[0].targetID,
+        deviceId = targetId.split('.')[0],
+        newPlatform: MyLinkPlatformConfig = {
+          platform: platformName,
+          deviceId,
+          pin: 0,
+        },
+        reverseAll = myLinkPlatform.targets.every(
+          (target) => target.orientation?.closed === 'up'
+        )
+
+      if (reverseAll) {
+        newPlatform.reverseAll = reverseAll
       }
-    })
-  } else {
-    log('Bad `config.targets` value, must be an array.')
-  }
-  if (compositeTargets) {
-    if (typeof compositeTargets === 'object') {
-      for (const [targetID, composedIDs] of Object.entries(compositeTargets)) {
-        if (Array.isArray(composedIDs)) {
-          normalConfig.compositeTargets[targetID] = []
-          for (const composedID of composedIDs) {
-            if (typeof composedID === 'string') {
-              normalConfig.compositeTargets[targetID].push(composedID)
-            } else {
-              log(
-                'Bad `config.compositeTargets[' +
-                  targetID +
-                  ']` value, `' +
-                  String(composedID) +
-                  ' ` must be a string.'
-              )
-            }
-          }
-        } else {
-          log(
-            'Bad `config.compositeTargets[' +
-              targetID +
-              ']` value, must be an array.'
-          )
-        }
-      }
-    } else {
-      log('Bad `config.compositeTargets` value, must be an object.')
+
+      platforms[platforms.indexOf(myLinkPlatform)] = newPlatform
+
+      // save the migrated config
+      return JSON.stringify(config, null, 4)
+    } catch (_) {
+      // return with no changes if anything goes wrong
+      return
     }
-  }
-  return normalConfig
+  })
 }
