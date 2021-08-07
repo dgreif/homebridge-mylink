@@ -1,5 +1,4 @@
 import { hap } from './hap'
-import { SomfyMyLinkPlatform } from './platform'
 import { MyLinkTargetConfig } from './config'
 import {
   AccessoryPlugin,
@@ -8,6 +7,8 @@ import {
   CharacteristicValue,
   Service as HapService,
 } from 'homebridge'
+import { logError, logInfo } from './util'
+import { MyLink } from './my-link'
 
 export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
   public name = `Somfy ${this.target.name}`
@@ -15,10 +16,7 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
   private currentValue = 0
   private services: HapService[] = []
 
-  constructor(
-    private platform: SomfyMyLinkPlatform,
-    private target: MyLinkTargetConfig
-  ) {
+  constructor(private myLink: MyLink, private target: MyLinkTargetConfig) {
     const { Service, Characteristic } = hap,
       accessoryInformationService = new Service.AccessoryInformation()
 
@@ -38,7 +36,8 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
         Characteristic.CurrentPosition
       ),
       positionState = service.getCharacteristic(Characteristic.PositionState),
-      targetPosition = service.getCharacteristic(Characteristic.TargetPosition)
+      targetPosition = service.getCharacteristic(Characteristic.TargetPosition),
+      target = this.myLink.target(targetID)
 
     targetPosition.on(
       CharacteristicEventTypes.SET,
@@ -49,11 +48,8 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
         try {
           callback()
 
-          this.platform.log(
-            'Setting position of %s from %s to %s.',
-            `target ${targetID} (${name})`,
-            `${this.currentValue}%`,
-            `${targetValue}%`
+          logInfo(
+            `Setting position of target ${targetID} (${name}) from ${this.currentValue}% to ${targetValue}%.`
           )
 
           positionState.setValue(
@@ -63,8 +59,6 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
               ? Characteristic.PositionState.INCREASING
               : Characteristic.PositionState.STOPPED
           )
-
-          const target = this.platform.synergy.target(targetID)
 
           if (targetValue === 0) {
             await target[orientation.closed]()
@@ -78,10 +72,8 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
         } catch (error) {
           targetPosition.updateValue(this.currentValue)
 
-          this.platform.log(
-            'Encountered an error setting target position of %s: %s',
-            `target ${targetID} (${name})`,
-            error.message
+          logError(
+            `Encountered an error setting target position of target ${targetID} (${name}): ${error.message}`
           )
         } finally {
           currentPosition.updateValue(this.currentValue)
@@ -91,7 +83,7 @@ export class SomfyMyLinkTargetAccessory implements AccessoryPlugin {
     )
 
     // Set a more sane default value for the current position.
-    this.currentValue = (currentPosition.getDefaultValue() as number) || 0
+    this.currentValue = 0
     currentPosition.updateValue(this.currentValue)
     targetPosition.updateValue(this.currentValue)
 

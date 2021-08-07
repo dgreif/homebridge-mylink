@@ -16,8 +16,10 @@ export interface MyLinkTargetConfig {
 export interface MyLinkConfig {
   ipAddress: string
   systemID: string
+  port?: number
   targets: MyLinkTargetConfig[]
   compositeTargets: { [target: string]: string[] }
+  debug?: boolean
 }
 
 function normalizeTarget(
