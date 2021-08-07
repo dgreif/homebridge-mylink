@@ -1,5 +1,5 @@
 import { createConnection, Socket } from 'net'
-import { logDebug, logError } from './util'
+import { delay, logDebug, logError } from './util'
 
 class ConnectionManager {
   private socket?: Socket
@@ -70,8 +70,8 @@ class ConnectionManager {
 
           setTimeout(() => {
             cleanUp()
-            reject(new Error('Failed to send command after 1 second'))
-          }, 1000)
+            reject(new Error('Failed to send command after 5 seconds'))
+          }, 5000)
 
           socket.write(
             JSON.stringify({
@@ -103,6 +103,54 @@ export interface ChannelInfo {
   type: number
 }
 
+export function splitTargetId(targetId: string) {
+  const [deviceId, channelId] = targetId.split('.')
+
+  return {
+    deviceId,
+    channelId: +channelId,
+  }
+}
+
+export class Channel {
+  public readonly deviceId: string
+  public readonly channelId: number
+
+  get name() {
+    return this.info.name
+  }
+
+  get targetId() {
+    return this.info.targetID
+  }
+
+  // eslint-disable-next-line no-use-before-define
+  constructor(public readonly info: ChannelInfo, public myLink: MyLink) {
+    const { deviceId, channelId } = splitTargetId(info.targetID)
+    this.deviceId = deviceId
+    this.channelId = channelId
+  }
+
+  down() {
+    return this.myLink.send<boolean>(this.targetId, 'mylink.move.down')
+  }
+
+  stop() {
+    return this.myLink.send<boolean>(this.targetId, 'mylink.move.stop')
+  }
+
+  up() {
+    return this.myLink.send<boolean>(this.targetId, 'mylink.move.up')
+  }
+
+  getInfo() {
+    return this.myLink.send<Pick<ChannelInfo, 'name' | 'type'>>(
+      this.targetId,
+      'mylink.status.info'
+    )
+  }
+}
+
 export class MyLink {
   private connectionManager = new ConnectionManager(this.host, this.port)
 
@@ -112,8 +160,21 @@ export class MyLink {
     private port = 44100
   ) {}
 
-  getChannels() {
-    return this.send<ChannelInfo[]>('*.*', 'mylink.status.info')
+  async getChannels(): Promise<Channel[]> {
+    try {
+      const channelInfos = await this.send<ChannelInfo[]>(
+        '*.*',
+        'mylink.status.info'
+      )
+
+      return channelInfos.map((info) => new Channel(info, this))
+    } catch (e) {
+      logError('Failed to get channels')
+      logError(e.message)
+
+      await delay(5000)
+      return this.getChannels()
+    }
   }
 
   async send<T = any>(targetID: string | undefined, method: string) {
@@ -129,14 +190,5 @@ export class MyLink {
       )
 
     return result
-  }
-
-  target(targetID: string) {
-    return {
-      down: () => this.send<boolean>(targetID, 'mylink.move.down'),
-      stop: () => this.send<boolean>(targetID, 'mylink.move.stop'),
-      up: () => this.send<boolean>(targetID, 'mylink.move.up'),
-      info: () => this.send<boolean>(targetID, 'mylink.status.info'),
-    }
   }
 }
