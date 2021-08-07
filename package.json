@@ -20,7 +20,7 @@
     "lint": "eslint '**/*.ts' --fix",
     "prettier": "prettier **/*.ts --write",
     "build": "rm -rf lib && tsc",
-    "test-homebridge": "npm run build && homebridge -P . -U ./.homebridge",
+    "hb": "npm run build && homebridge -P . -U ./.homebridge",
     "push-with-tags": "git push --follow-tags",
     "deploy": "standard-version && npm publish && npm run push-with-tags",
     "deploy-beta": "standard-version --prerelease beta && npm publish --tag alpha && npm run push-with-tags"

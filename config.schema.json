@@ -16,26 +16,33 @@
         "description": "In the myLink app, go to \"Integration\", choose one of the options that isn't Alexa or IFTTT, then choose \"Change System ID\".  Once set, choose \"Get Integration report\".",
         "placeholder": "System ID"
       },
-      "targets": {
-        "title": "Targets",
+      "reverseAll": {
+        "title": "Reverse All Channels",
+        "type": "boolean",
+        "description": "If your shades are all moving in the wrong direction, check this option.  If only some are backwards, specify the individual channel ids below instead."
+      },
+      "reverseChannels": {
+        "title": "Reverse Channel IDs",
+        "description": "Use this section if you need to reverse some, but not all, of your shades",
         "type": "array",
         "items": {
-          "type": "object",
-          "title": "Target",
-          "properties": {
-            "targetID": {
-              "type": "string",
-              "title": "Target ID",
-              "placeholder": "AB123C45.1",
-              "required": true
-            },
-            "name": {
-              "type": "string",
-              "title": "Name",
-              "placeholder": "Name",
-              "required": true
-            }
-          }
+          "type": "number",
+          "description": "Enter the channel number (1 - 16), which can be found in the Edit -> RTS Programming Settings section of the MyLink app",
+          "minimum": 1,
+          "maximum": 16,
+          "step": 1
+        }
+      },
+      "hideChannels": {
+        "title": "Hide Channel IDs",
+        "type": "array",
+        "description": "Use this section if you want to prevent certain channels from showing in HomeKit",
+        "items": {
+          "type": "number",
+          "description": "Enter the channel number (1 - 16), which can be found in the Edit -> RTS Programming Settings section of the MyLink app",
+          "minimum": 1,
+          "maximum": 16,
+          "step": 1
         }
       }
     },

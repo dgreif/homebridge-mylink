@@ -1,12 +1,11 @@
-import { setHap } from './hap'
+import { platformName, pluginName, setHap } from './hap'
 import { SomfyMyLinkPlatform } from './platform'
+import { migrateV1Config } from './config'
 
 export default function (homebridge: any) {
   setHap(homebridge.hap)
 
-  homebridge.registerPlatform(
-    'homebridge-mylink',
-    'Somfy myLink',
-    SomfyMyLinkPlatform
-  )
+  migrateV1Config(homebridge)
+
+  homebridge.registerPlatform(pluginName, platformName, SomfyMyLinkPlatform)
 }
