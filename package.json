@@ -1,6 +1,6 @@
 {
   "name": "homebridge-mylink",
-  "version": "2.0.0-beta.0",
+  "version": "2.0.0-beta.1",
   "description": "Somfy myLink plugin for Homebridge.",
   "license": "MIT",
   "keywords": [
