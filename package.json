@@ -23,7 +23,7 @@
     "hb": "npm run build && homebridge -P . -U ./.homebridge",
     "push-with-tags": "git push --follow-tags",
     "deploy": "standard-version && npm publish && npm run push-with-tags",
-    "deploy-beta": "standard-version --prerelease beta && npm publish --tag alpha && npm run push-with-tags"
+    "deploy-beta": "standard-version --prerelease beta && npm publish --tag beta && npm run push-with-tags"
   },
   "engines": {
     "homebridge": ">=1",
