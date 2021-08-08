@@ -24,7 +24,7 @@
     "prettier": "prettier **/*.ts --write",
     "build": "rm -rf lib && tsc",
     "hb": "npm run build && homebridge -P . -U ./.homebridge",
-    "push-with-tags": "git push --follow-tags",
+    "push-with-tags": "git push --follow-tags && node ./build/github-releaser.js",
     "deploy": "standard-version && npm publish && npm run push-with-tags",
     "deploy-beta": "standard-version --prerelease beta && npm publish --tag beta && npm run push-with-tags"
   },
