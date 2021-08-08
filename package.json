@@ -8,13 +8,16 @@
     "somfy",
     "mylink"
   ],
-  "homepage": "https://github.com/yungsters/homebridge-mylink",
+  "homepage": "https://github.com/dgreif/homebridge-mylink",
   "bugs": {
-    "url": "http://github.com/yungsters/homebridge-mylink/issues"
+    "url": "http://github.com/dgreif/homebridge-mylink/issues"
   },
-  "author": "Timothy Yung <yungsters@gmail.com>",
+  "author": "dgreif <dustin.greif@gmail.com>",
   "main": "lib/index.js",
-  "repository": "yungsters/homebridge-mylink",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dgreif/homebridge-mylink.git"
+  },
   "scripts": {
     "test": "eslint '**/*.ts'",
     "lint": "eslint '**/*.ts' --fix",
