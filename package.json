@@ -51,5 +51,11 @@
     "CHANGELOG.md",
     "config.schema.json",
     "lib"
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/dgreif"
+    }
   ]
 }
