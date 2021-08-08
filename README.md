@@ -2,15 +2,13 @@
 
 Somfy myLink plugin for [Homebridge](https://github.com/nfarina/homebridge)
 
-This plugin makes use of the [node-somfy-synergy](https://github.com/yungsters/node-somfy-synergy) package.
-
 # Configuration
 
 The easiest way to set up this plugin is by installing it with [homebridge-config-ui-x](https://www.npmjs.com/package/homebridge-config-ui-x).  If you prefer to edit your config manually, see the examples below.
 
 ## Setup
 
-You will need to use the Somfy MyLink mobile app to configure the System ID and find the IP address and Target IDs.
+You will need to use the Somfy myLink mobile app to configure the System ID and find the IP address and Target IDs.
 
 * Go to "Integration", choose one of the options that isn't Alexa or IFTTT, then choose "Change System ID"
 * With a System ID set, go to "Info" in the menu to find the IP address
