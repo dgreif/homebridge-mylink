@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/dgreif/homebridge-mylink/compare/v2.0.1...v2.0.2) (2021-08-10)
+
+
+### Bug Fixes
+
+* handle destroyed socket connections ([751149f](https://github.com/dgreif/homebridge-mylink/commit/751149f606f9dc73afa6118f16e352ee98d2a41e)), closes [#32](https://github.com/dgreif/homebridge-mylink/issues/32)
+
 ### [2.0.1](https://github.com/dgreif/homebridge-mylink/compare/v2.0.0...v2.0.1) (2021-08-08)
 
 ## [2.0.0](https://github.com/dgreif/homebridge-mylink/compare/v1.3.0...v2.0.0) (2021-08-07)
