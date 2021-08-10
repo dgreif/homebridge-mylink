@@ -2,7 +2,6 @@ import { createConnection, Socket } from 'net'
 import { delay, logDebug, logError } from './util'
 
 class ConnectionManager {
-  private socket?: Socket
   private previousRequestId = 0
   private previousRequest: Promise<unknown> = Promise.resolve()
 
@@ -10,9 +9,21 @@ class ConnectionManager {
 
   private socketPromise?: Promise<Socket>
 
-  private openSocket() {
+  private async openSocket(): Promise<Socket> {
     if (this.socketPromise) {
-      return this.socketPromise
+      const socketPromise = this.socketPromise,
+        socket = await this.socketPromise
+
+      if (socket.destroyed && socketPromise === this.socketPromise) {
+        // current socket has been destoryed
+        this.socketPromise = undefined
+        return this.openSocket()
+      } else if (socketPromise !== this.socketPromise) {
+        // there is a new socket on-deck
+        return this.openSocket()
+      }
+
+      return socket
     }
 
     this.socketPromise = new Promise<Socket>((resolve, reject) => {
@@ -32,9 +43,12 @@ class ConnectionManager {
       })
       socket.on('close', () => {
         logDebug('Socket Closed')
-        this.socket = undefined
+        this.socketPromise = undefined
       })
-      this.socket = socket
+      socket.on('end', () => {
+        logDebug('Socket Ended')
+        this.socketPromise = undefined
+      })
     })
 
     return this.socketPromise
