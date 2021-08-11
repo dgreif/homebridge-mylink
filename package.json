@@ -28,6 +28,11 @@
     "deploy": "standard-version && npm publish && npm run push-with-tags",
     "deploy-beta": "standard-version --prerelease beta && npm publish --tag beta && npm run push-with-tags"
   },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "npm run build && npm test"
+    }
+  },
   "engines": {
     "homebridge": ">=1",
     "node": ">=12"
