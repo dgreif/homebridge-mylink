@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/dgreif/homebridge-mylink/compare/v2.0.2...v2.0.3) (2021-08-11)
+
+
+### Bug Fixes
+
+* close connection after 1 minute of inactivity ([92cafed](https://github.com/dgreif/homebridge-mylink/commit/92cafed82d023965c02b264026f187d31e1963e0))
+
 ### [2.0.2](https://github.com/dgreif/homebridge-mylink/compare/v2.0.1...v2.0.2) (2021-08-10)
 
 
