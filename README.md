@@ -1,5 +1,8 @@
 # homebridge-mylink
 
+[![npm](https://badgen.net/npm/v/homebridge-ring)](https://www.npmjs.com/package/homebridge-ring)
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+
 Somfy myLink plugin for [Homebridge](https://github.com/nfarina/homebridge)
 
 # Configuration
