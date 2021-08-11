@@ -4,17 +4,34 @@ import { delay, logDebug, logError } from './util'
 class ConnectionManager {
   private previousRequestId = 0
   private previousRequest: Promise<unknown> = Promise.resolve()
+  private timeout: any
 
   constructor(private host: string, private port: number) {}
 
   private socketPromise?: Promise<Socket>
 
   private async openSocket(): Promise<Socket> {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+    this.timeout = setTimeout(() => {
+      if (this.socketPromise) {
+        this.socketPromise.then((socket) => {
+          if (!socket.destroyed) {
+            socket.destroy()
+          }
+        })
+      }
+    }, 60000)
+
+    logDebug('Getting Socket')
     if (this.socketPromise) {
       const socketPromise = this.socketPromise,
         socket = await this.socketPromise
+      logDebug('Have a socket')
 
       if (socket.destroyed && socketPromise === this.socketPromise) {
+        logDebug('Socket has been destroyed')
         // current socket has been destoryed
         this.socketPromise = undefined
         return this.openSocket()
@@ -27,12 +44,14 @@ class ConnectionManager {
     }
 
     this.socketPromise = new Promise<Socket>((resolve, reject) => {
+      logDebug('Creating fresh socket')
       const socket: Socket = createConnection(
         {
           host: this.host,
           port: this.port,
         },
         () => {
+          logDebug('Socket created')
           resolve(socket)
         }
       )
