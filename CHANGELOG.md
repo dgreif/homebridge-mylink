@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.5](https://github.com/dgreif/homebridge-mylink/compare/v2.0.4...v2.0.5) (2021-09-18)
+
+
+### Bug Fixes
+
+* update dependencies ([719c67d](https://github.com/dgreif/homebridge-mylink/commit/719c67dd5d46b416f99477e4c03d684aa3322d5f))
+
 ### [2.0.4](https://github.com/dgreif/homebridge-mylink/compare/v2.0.3...v2.0.4) (2021-08-11)
 
 
