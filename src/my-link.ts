@@ -201,7 +201,7 @@ export class MyLink {
       )
 
       return channelInfos.map((info) => new Channel(info, this))
-    } catch (e) {
+    } catch (e: any) {
       logError('Failed to get channels')
       logError(e.message)
 

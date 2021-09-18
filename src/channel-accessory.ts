@@ -62,7 +62,7 @@ export class ChannelAccessory {
           }
 
           context.currentValue = targetValue as number
-        } catch (e) {
+        } catch (e: any) {
           targetPosition.updateValue(context.currentValue)
 
           logError(
