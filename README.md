@@ -11,7 +11,7 @@ The easiest way to set up this plugin is by installing it with [homebridge-confi
 
 ## Setup
 
-You will need to use the Somfy myLink mobile app to configure the System ID and find the IP address and Target IDs.
+You will need to use the Somfy myLink mobile app to configure the System ID and find the IP address.
 
 * Go to "Integration", choose one of the options that isn't Alexa or IFTTT, then choose "Change System ID"
 * With a System ID set, go to "Info" in the menu to find the IP address
@@ -41,3 +41,7 @@ You will need to use the Somfy myLink mobile app to configure the System ID and 
   "hideChannels": [3, 4]
 }
 ```
+
+## Troubleshooting
+
+If Homebridge times out when connecting to the Somfy myLink, go to "Integrations"->"Control4", disable "SDDP" toggle at the bottom, and restart Homebridge.
