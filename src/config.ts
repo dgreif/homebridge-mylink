@@ -31,6 +31,7 @@ export interface MyLinkPlatformConfig extends PlatformConfig {
   hideChannels?: number[]
   reverseChannels?: number[]
   reverseAll?: boolean
+  channelRetryDelay?: number
   debug?: boolean
 }
 

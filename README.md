@@ -38,6 +38,7 @@ You will need to use the Somfy myLink mobile app to configure the System ID and 
   "port": 44100,
   "reverseAll": false,
   "reverseChannels": [1, 2],
-  "hideChannels": [3, 4]
+  "hideChannels": [3, 4],
+  "channelRetryDelay": 5
 }
 ```

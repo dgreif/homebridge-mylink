@@ -44,6 +44,12 @@
           "maximum": 16,
           "step": 1
         }
+      },
+      "channelRetryDelay": {
+        "title": "Channel Retry Delay",
+        "type": "number",
+        "minimum": 5,
+        "description": "How long (in seconds) to wait before attempting to retry fetching channel info on failure"
       }
     },
     "required": [

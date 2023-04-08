@@ -65,7 +65,7 @@ export class SomfyMyLinkPlatform implements DynamicPlatformPlugin {
       return
     }
 
-    const myLink = new MyLink(config.systemID, config.ipAddress, config.port),
+    const myLink = new MyLink(config.systemID, config.ipAddress, config.port, config.channelRetryDelay),
       channels = await myLink.getChannels(),
       { api } = this,
       cachedAccessoryIds = Object.keys(this.homebridgeAccessories),

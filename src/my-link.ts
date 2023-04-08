@@ -190,7 +190,8 @@ export class MyLink {
   constructor(
     private systemID: string,
     private host: string,
-    private port = 44100
+    private port = 44100,
+    private channelRetryDelay = 5 // value is in seconds
   ) {}
 
   async getChannels(): Promise<Channel[]> {
@@ -205,7 +206,7 @@ export class MyLink {
       logError('Failed to get channels')
       logError(e.message)
 
-      await delay(5000)
+      await delay(this.channelRetryDelay * 1000) // convert seconds to ms
       return this.getChannels()
     }
   }
