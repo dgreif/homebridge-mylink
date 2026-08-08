@@ -1,7 +1,5 @@
 # homebridge-mylink
 
-> **⚠️ UNMAINTAINED**: This repository is no longer actively maintained. The original author no longer owns a myLink device and is not able to support this plugin. Please open an issue if you are interested in becoming a maintainer.
-
 [![npm](https://badgen.net/npm/v/homebridge-mylink)](https://www.npmjs.com/package/homebridge-mylink)
 [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 
